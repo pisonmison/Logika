@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">Logika</string>
+    <string name="pin_texz">Select your pin(s) to be modified</string>
+
+    <string name="rb_red">Red</string>
+    <string name="rb_green">Green</string>
+    <string name="rb_blue">Blue</string>
+    <string name="rb_yellow">Yellow</string>
+    <string name="rb_cyan">Cyan</string>
+    <string name="rb_magenta">Magenta</string>
+
+
+    <string name="checkBox_A">Magenta</string>
+    <string name="checkBox_B">Magenta</string>
+    <string name="checkBox_C">Magenta</string>
+    <string name="checkBox_D">Magenta</string>
+
+
+
+
 </resources>
