@@ -10,12 +10,16 @@
     <string name="rb_magenta">Magenta</string>
 
 
-    <string name="checkBox_A">Magenta</string>
-    <string name="checkBox_B">Magenta</string>
-    <string name="checkBox_C">Magenta</string>
-    <string name="checkBox_D">Magenta</string>
+    <string name="checkBox_A">A</string>
+    <string name="checkBox_B">B</string>
+    <string name="checkBox_C">C</string>
+    <string name="checkBox_D">D</string>
 
+    <string name="ColorCodeGuess"> Your Color Code Guess:</string>
+    <string name="ColorCodeButtons"> Color Choices:</string>
+    <string name="ColorCodeGenerate"> GENERATE A NEW COLOR CODE</string>
 
+    <string name="AttempMessage"> Number of \n  Attempts Needed:</string>
 
 
 </resources>
