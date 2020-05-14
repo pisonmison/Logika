@@ -27,7 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/button5" />
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/linearLayout_checkboxen_ID"
         android:layout_width="210dp"
         android:layout_height="21dp"
         android:layout_marginTop="8dp"
@@ -156,40 +156,52 @@
 
 
             <RadioButton
-                android:id="@+id/radioButton1"
+                android:id="@+id/radioButtonRED_ID"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/rb_red" />
+
+                android:text="@string/rb_red"
+                tools:ignore="OnClick" />
 
             <RadioButton
-                android:id="@+id/radioButton2"
+                android:id="@+id/radioButtonGREEN_ID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/rb_green" />
+
+                android:text="@string/rb_green"
+                tools:ignore="OnClick" />
 
             <RadioButton
-                android:id="@+id/radioButton3"
+                android:id="@+id/radioButtonBLUE_ID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/rb_blue" />
+
+                android:text="@string/rb_blue"
+                tools:ignore="OnClick" />
 
             <RadioButton
-                android:id="@+id/radioButton4"
+                android:id="@+id/radioButtonYELLOW_ID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/rb_yellow" />
+
+                android:text="@string/rb_yellow"
+                tools:ignore="OnClick" />
 
             <RadioButton
-                android:id="@+id/radioButton5"
+                android:id="@+id/radioButtonCYAN_ID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/rb_cyan" />
+
+                android:text="@string/rb_cyan"
+                tools:ignore="OnClick" />
 
             <RadioButton
-                android:id="@+id/radioButton6"
+                android:id="@+id/radioButtonMAGENTA_ID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/rb_magenta" />
+
+                android:text="@string/rb_magenta"
+                tools:ignore="OnClick" />
         </RadioGroup>
     </LinearLayout>
 
