@@ -24,7 +24,8 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
 
     private Button dismissButton;
     private Boolean boxArray[] = {false, false, false, false};
-    private String boxColorArray[] ={"empty","empty","empty","empty"};
+    private Boolean boxOnlyColorRight[] = {false, false, false, false};
+    int boxCounter =0;
 
 
 
@@ -50,10 +51,11 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
 
         dismissButton.setOnClickListener(this);
 
-        setBlackBoxes();
-        colorBoxes();
+
+        colorBlackBoxes();
+        colorWhiteBoxes();
         System.out.println("BoxArray:" + Arrays.toString(boxArray));
-        System.out.println("BoxColorArray:" + Arrays.toString(boxColorArray));
+        //System.out.println("BoxColorArray:" + Arrays.toString(boxColorArray));
 
 
     }
@@ -72,91 +74,90 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
     avaible colors elimates duplicate colors-> no white box when choosing duplicate colors
     when 3 boxes are already fully correct.*/
 
-    public void setBlackBoxes() {
+    public int setBlackBoxes() {
 
-        int counter = 0;
-        int availableColors = 0;
+
+        int blackboxes = 0;
 
         for(int i = 0; i < 4; i++) {
-
             if (MainActivity.userColorCode[i] == MainActivity.generatedColorCode[i]) {
-                if (boxArray[counter] == false) {
-                    boxArray[counter] = true;
-                    boxColorArray[counter] = "black";
-                    counter++;
-                    availableColors++;
 
-
-
-                }
-
+                        boxArray[i] = true;
+                        blackboxes++;
+                        boxCounter++;
 
             }
 
 
         }
 
-        fullyCorrectPinsView.setText(String.valueOf(counter) + " pin(s) are fully correct.");
-        setWhiteBoxes(counter, availableColors);
-        System.out.println("Counter:" + counter);
+        fullyCorrectPinsView.setText(String.valueOf(blackboxes) + " pin(s) are fully correct.");
 
+        System.out.println("Counter:" + boxCounter);
+        return blackboxes;
     }
 
 
 
 //check for right colors, but wrong places and set array accordinly
-    public void setWhiteBoxes(int counter, int availableColors){
-        int colors = 0;
-
-        for(int i = counter+1; i < 4; i++){
-            for(int j = availableColors+1; j<4;j++){
-                if(MainActivity.userColorCode[i] == MainActivity.generatedColorCode[j]){
-                    if(boxArray[i] == false ){
-                        boxArray[i] = true;
-                        boxColorArray[i] = "white";
-                        colors++;
+    public int setWhiteBoxes( ) {
 
 
+        int whiteboxes  = 0;
+        for (int i = boxCounter; i < 4; i++) {
+            for (int j = boxCounter; j < 4; j++) {
+                if (MainActivity.userColorCode[i] == MainActivity.generatedColorCode[j] && boxArray[i] == false) {
 
-                    }
+                            boxArray[i] = true;
+                            whiteboxes++;
+
+
 
                 }
-
             }
+            onlyColorCorrectPinView.setText(String.valueOf(whiteboxes) + " pins(s) have correct color, but wrong position");
         }
-    onlyColorCorrectPinView.setText(String.valueOf(colors) + " pins(s) have correct color, but wrong position");
-    }
+        return whiteboxes;}
+
+        //color boxes according to the desired color in boxcolorarray
+
+        public void colorBlackBoxes () {
+        int temp = setBlackBoxes();
+        //int temp2 = setWhiteBoxes();
+
+        for(int i = 0; i < temp; i++){
+            boxlayout.getChildAt(i).setBackgroundColor(getColor(R.color.black));
 
 
-    //color boxes according to the desired color in boxcolorarray
 
-    public void colorBoxes(){
 
-            for (int i = 0; i < boxlayout.getChildCount(); i++) {
-                if(boxArray[i] && boxColorArray[i].equals("black")){
-                    boxlayout.getChildAt(i).setBackgroundColor(getColor(R.color.black));
-                }
-                else if(boxColorArray[i].equals("white")){
-                    boxlayout.getChildAt(i).setBackgroundColor(getColor(R.color.white));
-                }
+        }
+        }
+
+        public void colorWhiteBoxes(){
+            int temp2 = setWhiteBoxes();
+            for(int i = boxCounter; i < (temp2 + boxCounter);i++){
+                boxlayout.getChildAt(i).setBackgroundColor(getColor(R.color.white));
+
             }
-    }
-
-
-
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.dismissButton:
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                startActivity(intent);
 
 
 
         }
 
 
+        @Override
+        public void onClick (View v){
+            switch (v.getId()) {
+                case R.id.dismissButton:
+                    Intent intent = new Intent(this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(intent);
+
+
+            }
+
+
+        }
     }
-}
+

@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
    private TextView c;
    private TextView d;
 
+   private Boolean ableToCheck = false;
 
 
 
@@ -98,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         radioGroup.setOnCheckedChangeListener(this);
         disableButtons();
+        mailButton.setEnabled(false);
 
 
     }
@@ -281,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                // userColorCode[3] = 0;
                 userColorCode[3] = setColorCodeForUser();
             }
-            System.out.println("Users Code Guess" + Arrays.toString(userColorCode));
+
 
 
         }
@@ -301,21 +303,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //on click in checkboxes it updates game/screen
         @Override
         public void onClick (View v){
-            switch (v.getId()) {
+        checkPins();
+        checkForCompleteSolution();
+        switch (v.getId()) {
                 case R.id.checkScreenButton:
+
                     Intent intent = new Intent(this, CheckScreen.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
 
             }
 
-            checkPins();
-            setColor();
+
+            //setColor();
             System.out.println(Arrays.toString(pinArray));
             System.out.println(Arrays.toString(colorButtonsArray));
             System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
-            colorPins();
-            checkColorCode();
+            //colorPins();
+            //checkColorCode();
 
 
         }
@@ -330,17 +335,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             System.out.println("Color Array:" + Arrays.toString(colorButtonsArray));
             System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
 
-
             colorPins();
             checkColorCode();
             attemptCounter++;
             attemptsView.setText(String.valueOf(attemptCounter));
+            System.out.println("Users Code Guess" + Arrays.toString(userColorCode));
+            checkForCompleteSolution();
         }
 
         //generates a color code everytime button is pressed
         public void generate_ColorCode (View view){
             generate_ColorCodeOnStart();
-
+            mailButton.setEnabled(false);
 
             dissableCheckBoxesAndColors();
             checkPins();
@@ -351,6 +357,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             attemptCounter=0;
             attemptsView.setText(String.valueOf(attemptCounter));
             System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
-            System.out.println("User.Code" + Arrays.toString(userColorCode));
+        System.out.println("User.Code" + Arrays.toString(userColorCode));
         }
-    }
+
+
+        public void checkForCompleteSolution(){
+        int count = 0;
+        for(int i = 0; i < 4; i++){
+            if(userColorCode[0] != 9){
+                count++;
+
+            }
+            System.out.print("COUNT:"+ count);
+            if(count == 3){
+                mailButton.setEnabled(true);
+            }
+
+        }}
+
+
+
+
+
+
+}
