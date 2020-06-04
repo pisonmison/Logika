@@ -6,6 +6,10 @@
     <color name="darkgrey">#606060</color>
     <color name="lightgrey">#c0c0c0</color>
 
+    <color name="white">#FFFFFF</color>
+
+    <color name="black">#000000</color>
+
     <color name="red">#FFFF0000</color>
     <color name="green">#00FF00    </color>
     <color name="blue">#0022FF</color>

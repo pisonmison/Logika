@@ -3,6 +3,8 @@ package com.example.logika;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -13,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -20,19 +23,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity<pinArray> extends AppCompatActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
-   private Boolean[] pinArray = {false, false, false, false};
+   private Boolean[] pinArray = {false, false, false, false}; //4 checkboxes array
 
 
-   private Boolean[] colorButtonsArray = {false, false, false, false, false, false};
+   private Boolean[] colorButtonsArray = {false, false, false, false, false, false}; //6 colorpin array
 
    private int attemptCounter;         //counter für textview
+    static int[] userColorCode ={0,0,0,0}; //code for user -> same as colorpins, red = 0, blue = 1, etc...
+     static int[] generatedColorCode = {0,0,0,0}; //generated random code from 0-5(red-magenta)
 
-   private int[] userColorCode ={0,0,0,0};
-   private int[] generatedColorCode = {0,0,0,0};
 
-   private int attemptCountr;
 
 
 
@@ -52,13 +54,18 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
    private RadioButton radioButtonCyan;
    private RadioButton radioButtonMagenta;
 
+   private LinearLayout checkBoxLayout;
+    private LinearLayout colorTextViewLayout;
+
    private FloatingActionButton mailButton;
    private RadioButton radioButton;
+   private TextView attemptsView;
 
    private TextView a;
    private TextView b;
    private TextView c;
    private TextView d;
+
 
 
 
@@ -71,11 +78,13 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
         checkBoxB = findViewById(R.id.checkBoxBID);
         checkBoxC = findViewById(R.id.checkBoxCID);
         checkBoxD = findViewById(R.id.checkBoxDID);
-
+        attemptsView = findViewById(R.id.counterview_ID);
 
         linearLayout = findViewById(R.id.linearLayout_checkboxen_ID);
+        colorTextViewLayout = findViewById(R.id.colorViewsLayout_ID);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroupID);
-
+        mailButton = findViewById(R.id.checkScreenButton);
+        mailButton.setOnClickListener(this);
 
         a = findViewById(R.id.textViewA_ID);
         b = findViewById(R.id.textViewB_ID);
@@ -99,18 +108,21 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
     public void generate_ColorCodeOnStart(){
         int i = 0;
         List<String> givenList = Arrays.asList("red", "green", "blue", "yellow", "cyan", "magenta");
-        while(i < 4) {
+        while (i < 4) {
             Random rnd = new Random();
             int color = rnd.nextInt(givenList.size());
-           generatedColorCode[i] = color;
+            generatedColorCode[i] = color;
+            userColorCode[i] = 9;
             i++;
+
 
         }
 
 
     }
 
-
+        //checks colorbutton array, which button is picked, is then
+        //
         public int setColorCodeForUser() {
         int colorChoice=0;
         for (int i = 0; i < colorButtonsArray.length; i++) {
@@ -124,17 +136,34 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
 
         }
 
+
+
+
+        //checks how many colors are in right place, if all allign, user gets instant win message!
         public void checkColorCode () {
             int j = 0;
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 4; i++) {
 
                 if (generatedColorCode[i] == userColorCode[i]) {
                     j++;
-                    System.out.print(j);
+                    System.out.println("Current Correct Colors:"+ j);
                 }
-                if (j == 3) {
-                    System.out.println("GEWONNNEN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                if (j == 4) {
+                    Toast.makeText(this, "Congratulations! YOU WIN!", Toast.LENGTH_LONG).show();
                 }
+
+
+            }
+
+        }
+
+        //disbale checkboxes and clear color after generating new color code
+        public void dissableCheckBoxesAndColors(){
+            for (int i = 0; i < linearLayout.getChildCount(); i++) {
+                ((CheckBox) linearLayout.getChildAt(i)).setChecked(false);
+            }
+            for(int i = 0; i < colorTextViewLayout.getChildCount();i++){
+                colorTextViewLayout.getChildAt(i).setBackgroundColor(getColor(R.color.lightgrey));
 
             }
 
@@ -155,7 +184,10 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
 
         public void setColor () {
 
-            //iterate throught radiogroup and check which button is clicked, set array accordingly
+            /*iterate throught radiogroup and check which button is clicked, set array accordingly,
+            so we know what color to use for actually checked pins
+             */
+
             for (int i = 0; i < radioGroup.getChildCount(); i++) {
                 if (((CompoundButton) radioGroup.getChildAt(i)).isChecked()) {
                     colorButtonsArray[i] = true;
@@ -170,7 +202,7 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
         }
 
 
-        //interate thoough the linear layout and check pins and set the pinArray accordingly
+        //interate thoough the linear layout and check pins if checked and set the pinArray accordingly
         public void checkPins () {
 
 
@@ -180,6 +212,8 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
                     pinArray[i] = true;
                     enableButtons();
 
+
+                    //disable color buttons when no box is chcked
                 } else if (!((CompoundButton) linearLayout.getChildAt(0)).isChecked() &&
                         !((CompoundButton) linearLayout.getChildAt(1)).isChecked() &&
                         !((CompoundButton) linearLayout.getChildAt(2)).isChecked() &&
@@ -195,12 +229,12 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
         }
 
 
-        //choose which color to color the pin(textviev v) given by function choosePin();
+        //choose which color to color the pin(textviev v)
         public void chooseColor (TextView v){
 
 
 
-                if (colorButtonsArray[0] == true) {
+                if (colorButtonsArray[0]) {
                     v.setBackgroundColor(getColor(R.color.red));
                 } else if (colorButtonsArray[1]) {
                     v.setBackgroundColor(getColor(R.color.green));
@@ -249,6 +283,7 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
             }
             System.out.println("Users Code Guess" + Arrays.toString(userColorCode));
 
+
         }
 
 
@@ -266,15 +301,23 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
         //on click in checkboxes it updates game/screen
         @Override
         public void onClick (View v){
+            switch (v.getId()) {
+                case R.id.checkScreenButton:
+                    Intent intent = new Intent(this, CheckScreen.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivity(intent);
+
+            }
 
             checkPins();
             setColor();
             System.out.println(Arrays.toString(pinArray));
             System.out.println(Arrays.toString(colorButtonsArray));
             System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
-
             colorPins();
             checkColorCode();
+
+
         }
 
         //on change in radigroup(6buttons) it updates game/screen
@@ -290,19 +333,24 @@ public class MainActivity<pinArray> extends AppCompatActivity implements View.On
 
             colorPins();
             checkColorCode();
+            attemptCounter++;
+            attemptsView.setText(String.valueOf(attemptCounter));
         }
 
         //generates a color code everytime button is pressed
         public void generate_ColorCode (View view){
-            int i = 0;
-            List<String> givenList = Arrays.asList("red", "green", "blue", "yellow", "cyan", "magenta");
-            while (i < 4) {
-                Random rnd = new Random();
-                int color = rnd.nextInt(givenList.size());
-                generatedColorCode[i] = color;
-                i++;
+            generate_ColorCodeOnStart();
 
-            }
+
+            dissableCheckBoxesAndColors();
+            checkPins();
+            clearColorArray(9);
+            //checkboxen unchecken
+            //farben reseten
+
+            attemptCounter=0;
+            attemptsView.setText(String.valueOf(attemptCounter));
             System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
+            System.out.println("User.Code" + Arrays.toString(userColorCode));
         }
     }

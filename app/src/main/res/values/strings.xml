@@ -18,7 +18,10 @@
     <string name="ColorCodeGuess"> Your Color Code Guess:</string>
     <string name="ColorCodeButtons"> Color Choices:</string>
     <string name="ColorCodeGenerate"> GENERATE A NEW COLOR CODE</string>
-
+    <string name="colorCodeCheckResults">Color Code Check Results</string>
+    <string name="zeropinscorrect"> 0 pin(s) are fully correct.</string>
+    <string name= "correctcolorbutwrongpos"> 0 pin(s) have correct color, but wrong position.</string>
+    <string name="DISMISS"> DISMISS</string>
     <string name="AttempMessage"> Number of \n  Attempts Needed:</string>
 
 
