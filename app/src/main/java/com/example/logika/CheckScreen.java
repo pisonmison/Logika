@@ -25,8 +25,8 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
     private Button dismissButton;
     private Boolean boxArray[] = {false, false, false, false};
     private Boolean boxOnlyColorRight[] = {false, false, false, false};
-    int boxCounter =0;
 
+    private int boxCounter = 0;
 
 
 
@@ -52,6 +52,7 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
         dismissButton.setOnClickListener(this);
 
 
+        //color the boxes everytime this activity is started or put to front
         colorBlackBoxes();
         colorWhiteBoxes();
         System.out.println("BoxArray:" + Arrays.toString(boxArray));
@@ -63,17 +64,15 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
 
     /*
     1. check for fully correct pins and color boxes
-    2. check for color only correct and color boxes left.
+    2. check for color_only_correct and color boxes left.
     3. else dont color anything
 
-    Pin correct und richtige pose
-     */
 
-    /*check for correct color and place, set array accordingly
-    counter for filling boxes from right to left
-    avaible colors elimates duplicate colors-> no white box when choosing duplicate colors
-    when 3 boxes are already fully correct.*/
 
+
+/*check for fully correct placements, set array and color boxes black, return amount of colored
+  black boxes for later use in colorWhiteBoxes();
+    */
     public int setBlackBoxes() {
 
 
@@ -93,20 +92,24 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
 
         fullyCorrectPinsView.setText(String.valueOf(blackboxes) + " pin(s) are fully correct.");
 
-        System.out.println("Counter:" + boxCounter);
+        System.out.println("Counter:" + blackboxes);
         return blackboxes;
     }
 
 
 
-//check for right colors, but wrong places and set array accordinly
+/*
+
+    *
+    check for right colors, but wrong places. Set Array, and color boxes.*/
+
     public int setWhiteBoxes( ) {
 
 
         int whiteboxes  = 0;
-        for (int i = boxCounter; i < 4; i++) {
-            for (int j = boxCounter; j < 4; j++) {
-                if (MainActivity.userColorCode[i] == MainActivity.generatedColorCode[j] && boxArray[i] == false) {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if (!boxArray[i] && MainActivity.userColorCode[j] == MainActivity.generatedColorCode[i] ) {
 
                             boxArray[i] = true;
                             whiteboxes++;
@@ -135,9 +138,10 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
         }
 
         public void colorWhiteBoxes(){
-            int temp2 = setWhiteBoxes();
+            int temp2 = setWhiteBoxes(); // returns amount of white boxes
             for(int i = boxCounter; i < (temp2 + boxCounter);i++){
-                boxlayout.getChildAt(i).setBackgroundColor(getColor(R.color.white));
+
+                   boxlayout.getChildAt(i).setBackgroundColor(getColor(R.color.white));
 
             }
 

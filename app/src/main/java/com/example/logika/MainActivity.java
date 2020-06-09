@@ -1,5 +1,5 @@
 package com.example.logika;
-
+//Anton Leonov 1274411
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -99,11 +99,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         radioGroup.setOnCheckedChangeListener(this);
         disableButtons();
-        mailButton.setEnabled(false);
-
-
+        //mailButton.setEnabled(false);
     }
-
 
     /*generates color code on start. I used a 2. function which takes no View as parameter to call
     /in onCreate*/
@@ -116,11 +113,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             generatedColorCode[i] = color;
             userColorCode[i] = 9;
             i++;
-
-
         }
-
-
     }
 
         //checks colorbutton array, which button is picked, is then
@@ -135,8 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
         return colorChoice;
-
-        }
+    }
 
 
 
@@ -306,25 +298,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkPins();
         checkForCompleteSolution();
         switch (v.getId()) {
-                case R.id.checkScreenButton:
+            case R.id.checkScreenButton:
 
+                if (ableToCheck == true) {
                     Intent intent = new Intent(this, CheckScreen.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
-
-            }
-
-
-            //setColor();
-            System.out.println(Arrays.toString(pinArray));
-            System.out.println(Arrays.toString(colorButtonsArray));
-            System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
-            //colorPins();
-            //checkColorCode();
+                } else {
+                    Toast.makeText(this, "Please color all 4 Blocks!", Toast.LENGTH_SHORT);
+                }
+            buttonFunctions();
+        }
 
 
         }
 
+
+        public void buttonFunctions(){
+            setColor();
+            System.out.println(Arrays.toString(pinArray));
+            System.out.println(Arrays.toString(colorButtonsArray));
+            System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
+            colorPins();
+            checkColorCode();
+        }
         //on change in radigroup(6buttons) it updates game/screen
         @Override
         public void onCheckedChanged (RadioGroup group,int checkedId){
@@ -343,16 +340,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             checkForCompleteSolution();
         }
 
-        //generates a color code everytime button is pressed
+        //generates a color code everytime button is pressed and "restarts" the UI
+
         public void generate_ColorCode (View view){
             generate_ColorCodeOnStart();
-            mailButton.setEnabled(false);
+
 
             dissableCheckBoxesAndColors();
             checkPins();
             clearColorArray(9);
-            //checkboxen unchecken
-            //farben reseten
+            ableToCheck=false;
 
             attemptCounter=0;
             attemptsView.setText(String.valueOf(attemptCounter));
@@ -361,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 
+        //checks for completion and enables button if true
         public void checkForCompleteSolution(){
         int count = 0;
         for(int i = 0; i < 4; i++){
@@ -370,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             System.out.print("COUNT:"+ count);
             if(count == 3){
-                mailButton.setEnabled(true);
+                ableToCheck= true;
             }
 
         }}
