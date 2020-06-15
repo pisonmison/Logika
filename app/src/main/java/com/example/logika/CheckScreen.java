@@ -26,6 +26,8 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
     private Boolean boxArray[] = {false, false, false, false};
     private Boolean boxOnlyColorRight[] = {false, false, false, false};
 
+    private int[] userColorCode;
+    private int[] generatedColorCode;
     private int boxCounter = 0;
 
 
@@ -50,17 +52,25 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
 
 
         dismissButton.setOnClickListener(this);
-
+        getDataFromMainActivity();
 
         //color the boxes everytime this activity is started or put to front
         colorBlackBoxes();
         colorWhiteBoxes();
         System.out.println("BoxArray:" + Arrays.toString(boxArray));
+
         //System.out.println("BoxColorArray:" + Arrays.toString(boxColorArray));
 
 
     }
 
+    //gets the 2 arrays passed by main activity.
+    public void getDataFromMainActivity(){
+        Bundle extras = getIntent().getExtras();
+        userColorCode = extras.getIntArray("usercode");
+        generatedColorCode = extras.getIntArray("generatedcode");
+
+    }
 
     /*
     1. check for fully correct pins and color boxes
@@ -79,7 +89,7 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
         int blackboxes = 0;
 
         for(int i = 0; i < 4; i++) {
-            if (MainActivity.userColorCode[i] == MainActivity.generatedColorCode[i]) {
+            if (userColorCode[i] == generatedColorCode[i]) {
 
                         boxArray[i] = true;
                         blackboxes++;
@@ -109,7 +119,7 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
         int whiteboxes  = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                if (!boxArray[i] && MainActivity.userColorCode[j] == MainActivity.generatedColorCode[i] ) {
+                if (!boxArray[i] && generatedColorCode[i] ==  userColorCode[j] ) {
 
                             boxArray[i] = true;
                             whiteboxes++;

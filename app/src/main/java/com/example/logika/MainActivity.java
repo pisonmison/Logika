@@ -1,5 +1,6 @@
 package com.example.logika;
 //Anton Leonov 1274411
+import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
@@ -23,16 +25,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity implements Button.OnClickListener, RadioGroup.OnCheckedChangeListener {
 
    private Boolean[] pinArray = {false, false, false, false}; //4 checkboxes array
 
 
    private Boolean[] colorButtonsArray = {false, false, false, false, false, false}; //6 colorpin array
 
-   private int attemptCounter;         //counter für textview
-    static int[] userColorCode ={0,0,0,0}; //code for user -> same as colorpins, red = 0, blue = 1, etc...
-     static int[] generatedColorCode = {0,0,0,0}; //generated random code from 0-5(red-magenta)
+   private int attemptCounter = 0;         //counter für textview
+    private int[] userColorCode ={0,0,0,0}; //code for user -> same as colorpins, red = 0, blue = 1, etc...
+    private int[] generatedColorCode = {0,0,0,0}; //generated random code from 0-5(red-magenta)
 
 
 
@@ -99,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         radioGroup.setOnCheckedChangeListener(this);
         disableButtons();
-        //mailButton.setEnabled(false);
+
+       // mailButton.setEnabled(false);
     }
 
     /*generates color code on start. I used a 2. function which takes no View as parameter to call
@@ -256,23 +259,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             if (pinArray[0] == true) {
                 chooseColor(a);
-                //userColorCode[0] = 0;
+
                 userColorCode[0] = setColorCodeForUser();
             }
             if (pinArray[1] == true) {
                 chooseColor(b);
-               // userColorCode[1] = 0;
+
                 userColorCode[1] = setColorCodeForUser();
 
             }
             if (pinArray[2] == true) {
                 chooseColor(c);
-                //userColorCode[2] = 0;
+
                 userColorCode[2] = setColorCodeForUser();
             }
             if (pinArray[3] == true) {
                 chooseColor(d);
-               // userColorCode[3] = 0;
+
                 userColorCode[3] = setColorCodeForUser();
             }
 
@@ -295,19 +298,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //on click in checkboxes it updates game/screen
         @Override
         public void onClick (View v){
-        checkPins();
-        checkForCompleteSolution();
+
+
         switch (v.getId()) {
             case R.id.checkScreenButton:
 
+                checkForCompleteSolution();
+
+
                 if (ableToCheck == true) {
-                    Intent intent = new Intent(this, CheckScreen.class);
+
+
+                    Intent intent = new Intent(MainActivity.this, CheckScreen.class);
+                    intent.putExtra("usercode", userColorCode);
+                    intent.putExtra("generatedcode", generatedColorCode);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
+
                 } else {
                     Toast.makeText(this, "Please color all 4 Blocks!", Toast.LENGTH_SHORT);
                 }
-            buttonFunctions();
+
+
+            case R.id.checkBoxAID:
+                checkPins();
+
+                //buttonFunctions();
+            case R.id.checkBoxBID:
+                checkPins();
+
+                //buttonFunctions();
+            case R.id.checkBoxCID:
+                checkPins();
+
+                //buttonFunctions();
+            case R.id.checkBoxDID :
+                checkPins();
+
+                //buttonFunctions();
         }
 
 
@@ -327,17 +355,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void onCheckedChanged (RadioGroup group,int checkedId){
 
             checkPins();
-            setColor();
-            System.out.println("Pin Array:" + Arrays.toString(pinArray));
-            System.out.println("Color Array:" + Arrays.toString(colorButtonsArray));
-            System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
+            buttonFunctions();
 
-            colorPins();
-            checkColorCode();
-            attemptCounter++;
-            attemptsView.setText(String.valueOf(attemptCounter));
             System.out.println("Users Code Guess" + Arrays.toString(userColorCode));
-            checkForCompleteSolution();
+
         }
 
         //generates a color code everytime button is pressed and "restarts" the UI
@@ -360,19 +381,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //checks for completion and enables button if true
         public void checkForCompleteSolution(){
-        int count = 0;
-        for(int i = 0; i < 4; i++){
-            if(userColorCode[0] != 9){
-                count++;
-
+       int count;
+        for(  count = 0; count < 4; count++){
+            if(userColorCode[count] == 9){
+                break;
             }
             System.out.print("COUNT:"+ count);
             if(count == 3){
                 ableToCheck= true;
+                attemptCounter++;
+                attemptsView.setText(String.valueOf(attemptCounter));
+
             }
 
         }}
-
 
 
 
