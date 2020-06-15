@@ -69,11 +69,20 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
    private TextView d;
 
    private Boolean ableToCheck = false;
+   private int blackboxes = 0;
+   private int whiteboxes = 0;
+   private Boolean firststart = false;
+
+    public MainActivity() {
+    }
+
+    //calls methods when acitivity is visible again. Here we display our win message or the correct pin message.
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        firststart = true;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         generate_ColorCodeOnStart();
@@ -102,8 +111,69 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         radioGroup.setOnCheckedChangeListener(this);
         disableButtons();
 
-       // mailButton.setEnabled(false);
+
+
     }
+
+    /**
+     *  runs code everytime we return from checkscreen
+     *  passing the pin values with intent did not work. I tried 2 methods as seen below
+     *  with the methods "getDataFromCheckScreen() or onActivityResult() but it did not work
+     *  in the end i simply declared 2 static variables in check screen, so atleast it works.
+     */
+
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+        if(!firststart){
+            //getDataFromCheckScreen(); or onActivityResult() <- dont work..
+
+            checkColorCode();
+        }
+
+
+        firststart = false;
+
+    }
+
+
+
+
+
+
+    //does also not work, only prints default values.
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                blackboxes = data.getIntExtra("blackboxesDATA", 4);
+                whiteboxes = data.getIntExtra("whiteboxesDATA", 3);
+            }
+        }
+    }
+
+    //gets data from second activity. Does not work.
+    public void getDataFromCheckScreen() {
+
+       Bundle extras = getIntent().getExtras();
+       blackboxes = extras.getInt("blackboxes");
+       whiteboxes = extras.getInt("whiteboxes");
+
+
+
+    }
+
+
+
+
+
+
+
+
+
 
     /*generates color code on start. I used a 2. function which takes no View as parameter to call
     /in onCreate*/
@@ -139,6 +209,8 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
         //checks how many colors are in right place, if all allign, user gets instant win message!
         public void checkColorCode () {
             int j = 0;
+            blackboxes = CheckScreen.blackBoxes;
+            whiteboxes = CheckScreen.whiteBoxes;
             for (int i = 0; i < 4; i++) {
 
                 if (generatedColorCode[i] == userColorCode[i]) {
@@ -146,7 +218,11 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
                     System.out.println("Current Correct Colors:"+ j);
                 }
                 if (j == 4) {
-                    Toast.makeText(this, "Congratulations! YOU WIN!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, this.getString(R.string.winMessage), Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(this,blackboxes +  this.getString(R.string.zeropinscorrect) + whiteboxes +  this.getString(R.string.correctcolorbutwrongpos)
+                            +"\n" + this.getString(R.string.tryagain), Toast.LENGTH_LONG).show();
                 }
 
 
@@ -310,13 +386,15 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
 
 
                     Intent intent = new Intent(MainActivity.this, CheckScreen.class);
-                    intent.putExtra("usercode", userColorCode);
-                    intent.putExtra("generatedcode", generatedColorCode);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                    startActivity(intent);
+                    Bundle bundle = new Bundle();
+                    bundle.putIntArray("usercode", userColorCode);
+                    bundle.putIntArray("generatedcode", generatedColorCode);
+                    intent.putExtras(bundle);
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    startActivityForResult(intent,1);
 
                 } else {
-                    Toast.makeText(this, "Please color all 4 Blocks!", Toast.LENGTH_SHORT);
+                    Toast.makeText(this,this.getString(R.string.colorALl4Blocks), Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -348,7 +426,7 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
             System.out.println(Arrays.toString(colorButtonsArray));
             System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
             colorPins();
-            checkColorCode();
+
         }
         //on change in radigroup(6buttons) it updates game/screen
         @Override
@@ -375,7 +453,9 @@ public class MainActivity extends AppCompatActivity implements Button.OnClickLis
             attemptCounter=0;
             attemptsView.setText(String.valueOf(attemptCounter));
             System.out.println("Gen.Code" + Arrays.toString(generatedColorCode));
-        System.out.println("User.Code" + Arrays.toString(userColorCode));
+            System.out.println("User.Code" + Arrays.toString(userColorCode));
+            Toast.makeText(this, this.getString(R.string.newColorCodeGenerated) , Toast.LENGTH_SHORT).show();
+
         }
 
 

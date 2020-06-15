@@ -29,6 +29,8 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
     private int[] userColorCode;
     private int[] generatedColorCode;
     private int boxCounter = 0;
+    public static int whiteBoxes = 0;
+    public static int blackBoxes = 0;
 
 
 
@@ -64,7 +66,7 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
 
     }
 
-    //gets the 2 arrays passed by main activity.
+    //gets the 2 arrays passed by main activity. Works fine.
     public void getDataFromMainActivity(){
         Bundle extras = getIntent().getExtras();
         userColorCode = extras.getIntArray("usercode");
@@ -100,9 +102,10 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
 
         }
 
-        fullyCorrectPinsView.setText(String.valueOf(blackboxes) + " pin(s) are fully correct.");
+        fullyCorrectPinsView.setText(String.valueOf(blackboxes) + this.getString(R.string.zeropinscorrect));
 
         System.out.println("Counter:" + blackboxes);
+        blackBoxes = blackboxes;
         return blackboxes;
     }
 
@@ -128,14 +131,16 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
 
                 }
             }
-            onlyColorCorrectPinView.setText(String.valueOf(whiteboxes) + " pins(s) have correct color, but wrong position");
+            onlyColorCorrectPinView.setText(String.valueOf(whiteboxes)  + this.getString(R.string.correctcolorbutwrongpos));
         }
+        whiteBoxes = whiteboxes;
         return whiteboxes;}
 
         //color boxes according to the desired color in boxcolorarray
 
         public void colorBlackBoxes () {
         int temp = setBlackBoxes();
+
         //int temp2 = setWhiteBoxes();
 
         for(int i = 0; i < temp; i++){
@@ -149,6 +154,7 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
 
         public void colorWhiteBoxes(){
             int temp2 = setWhiteBoxes(); // returns amount of white boxes
+
             for(int i = boxCounter; i < (temp2 + boxCounter);i++){
 
                    boxlayout.getChildAt(i).setBackgroundColor(getColor(R.color.white));
@@ -164,7 +170,13 @@ public class CheckScreen extends AppCompatActivity implements Button.OnClickList
         public void onClick (View v){
             switch (v.getId()) {
                 case R.id.dismissButton:
-                    Intent intent = new Intent(this, MainActivity.class);
+                    Intent intent = new Intent(CheckScreen.this, MainActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("blackboxesDATA", blackBoxes);
+                    bundle.putInt("whiteboxesDATA", whiteBoxes);
+                    setResult(RESULT_OK, intent);
+                    intent.putExtras(bundle);
+                   // intent.putExtra("whiteboxes", whiteBoxes);
                     intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                     startActivity(intent);
 
